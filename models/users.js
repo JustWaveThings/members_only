@@ -10,6 +10,7 @@ const UserSchema = new Schema({
     type: Enumerator,
     required: true,
     enum: ["non-member", "member", "admin"],
+    default: "non-member",
   },
 });
 
