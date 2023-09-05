@@ -6,3 +6,12 @@ body {
 a {
   color: #00B7FF;
 }
+
+.page-message {
+  color: blue
+}
+
+.main {
+  color: pink;
+  background-color: blue;
+}
