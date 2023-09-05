@@ -16,11 +16,11 @@ mongoose.set("strictQuery", false);
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 
-/* const compression = require("compression");
-const helmet = require("helmet"); */
+const compression = require("compression");
+const helmet = require("helmet");
 
 const app = express();
-/* 
+
 const RateLimit = require("express-rate-limit");
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
@@ -36,7 +36,7 @@ app.use(
       "script-src": "self",
     },
   })
-); */
+);
 
 const mongoDB = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@cluster0.dmc0his.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
@@ -50,7 +50,8 @@ async function main() {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-/* app.use(compression()); */
+// compression
+app.use(compression());
 
 app.use(logger("dev"));
 app.use(express.json());
