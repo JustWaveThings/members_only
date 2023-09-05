@@ -2,6 +2,7 @@ require("dotenv").config();
 const debug = require("debug")("app");
 const createError = require("http-errors");
 const express = require("express");
+const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
@@ -50,6 +51,8 @@ async function main() {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+app.use(expressLayouts);
+
 // compression
 app.use(compression());
 
@@ -78,4 +81,4 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-module.exports = app;
+app.listen(3001, () => console.log("App listening on port 3001!"));
