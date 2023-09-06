@@ -1,4 +1,30 @@
 <%- contentFor('body') %>
-<main class='content-container'>
-  this is the sign up form...
+<main class="content-container">
+  <h1>Sign Up</h1>
+  <form method="POST" action="">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName" required />
+    <br />
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName" required />
+    <br />
+    <label for="username">Email:</label>
+    <input type="text" id="username" name="username" required />
+    <br />
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required />
+    <br />
+    <label for="confirmPassword">Confirm Password:</label>
+    <input
+      type="password"
+      id="confirmPassword"
+      name="confirmPassword"
+      required
+    />
+    <br />
+
+    <input type="submit" value="Sign Up" />
+  </form>
+  <p>Already have an account? <a href="/login">Sign In</a></p>
 </main>
