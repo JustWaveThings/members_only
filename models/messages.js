@@ -15,4 +15,4 @@ MessageSchema.virtual("timestamp_formatted").get(function () {
     : "";
 });
 
-module.exports = mongoose.model("Message", MessageSchema);
+module.exports = mongoose.model("Messages", MessageSchema);
