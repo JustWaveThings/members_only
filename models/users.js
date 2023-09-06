@@ -7,7 +7,7 @@ const UserSchema = new Schema({
   firstName: { type: String, required: true, max: 100 },
   lastName: { type: String, required: true, max: 100 },
   memberStatus: {
-    type: Enumerator,
+    type: String,
     required: true,
     enum: ["non-member", "member", "admin"],
     default: "non-member",
