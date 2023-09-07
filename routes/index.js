@@ -1,59 +1,26 @@
 const express = require("express");
 const router = express.Router();
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  res.locals = {
-    title: "Members Only",
-    message: "this is a message!",
-  };
-  res.render("index");
-});
+// controller modules
 
-// GET sign up page
-router.get("/sign-up", function (req, res, next) {
-  res.locals = {
-    title: "Members Only",
-    message: "this is a message!",
-  };
-  res.render("sign-up");
-});
+const controller = require("../controllers/controller");
 
-// get messages page
-router.get("/messages", function (req, res, next) {
-  res.locals = {
-    title: "Members Only",
-    message: "this is a message!",
-  };
-  res.render("messages");
-});
+// GET Routes
 
-// get login page
-router.get("/login", function (req, res, next) {
-  res.locals = {
-    title: "Members Only",
-    message: "this is a message!",
-  };
-  res.render("login");
-});
+router.get("/", controller.index);
 
-// get member challenge page
-router.get("/member", function (req, res, next) {
-  res.locals = {
-    title: "Members Only",
-    message: "this is a message!",
-  };
-  res.render("member-challenge");
-});
+router.get("/sign-up", controller.sign_up_get);
 
-// get admin challenge page
+router.get("/messages", controller.messages_get);
 
-router.get("/admin", function (req, res, next) {
-  res.locals = {
-    title: "Members Only",
-    message: "this is a message!",
-  };
-  res.render("admin-challenge");
-});
+router.get("/login", controller.login_get);
+
+router.get("/member-challenge", controller.member_challenge_get);
+
+router.get("/admin-challenge", controller.admin_challenge_get);
+
+router.post("/sign-up", controller.sign_up_post);
+
+router.post("/login", controller.login_post);
 
 module.exports = router;

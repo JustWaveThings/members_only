@@ -3,14 +3,34 @@
   <h1>Sign Up</h1>
   <form method="POST" action="">
     <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" required />
+    <input
+      type="text"
+      id="firstName"
+      name="firstName"
+      value="<%-
+    undefined == user ? '' : user.firstName %>"
+      required
+    />
     <br />
-
     <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" required />
+    <input
+      type="text"
+      id="lastName"
+      name="lastName"
+      value="<%-
+    undefined == user ? '' : user.lastName %>"
+      required
+    />
     <br />
     <label for="username">Email:</label>
-    <input type="text" id="username" name="username" required />
+    <input
+      type="text"
+      id="username"
+      name="username"
+      value="<%-
+    undefined == user ? '' : user.username %>"
+      required
+    />
     <br />
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required />
@@ -24,7 +44,22 @@
     />
     <br />
 
+    <% if (errors) { %>
+    <div class="error">
+      <ul>
+        <h5>
+          Please resolve the following <% errors.length === 1 ? 'error' :
+          'errors' %>:
+        </h5>
+        <% errors.map(function(error) { %>
+        <p><%= error.msg %></p>
+        <% }); %>
+      </ul>
+    </div>
+    <% } %>
+
     <input type="submit" value="Sign Up" />
   </form>
+
   <p>Already have an account? <a href="/login">Sign In</a></p>
 </main>
