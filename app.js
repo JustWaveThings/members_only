@@ -1,34 +1,34 @@
+require("dotenv").config();
 const debug = require("debug")("app");
 const createError = require("http-errors");
 const express = require("express");
+const passport = require("passport");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-
-const bcrypt = require("bcryptjs");
 const session = require("express-session");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+
 const user_controller = require("./models/users");
 const message_controller = require("./models/messages");
+
+const database = require("./utils/database");
 
 const indexRouter = require("./routes/index");
 
 const compression = require("compression");
 const helmet = require("helmet");
+const limiter = require("./utils/rateLimit");
 
 const app = express();
 
-/* const RateLimit = require("express-rate-limit");
-const limiter = RateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 20,
-  delayMs: 0, // disable delaying - full speed until the max limit is reached
-});
+// rate limiter
+app.use(limiter);
 
-app.use(limiter); // apply to all requests */
+// database connection
+app.use(database);
 
+// helmet
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -47,72 +47,36 @@ app.use(expressLayouts);
 // express session setup
 
 app.use(
-  session({ secret: "keyboard dog", resave: true, saveUninitialized: true })
+  session({
+    secret: process.env.SESSION_KEY,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
+  })
 );
 
 // passport setup
 
-// passport local strategy  function 1
-
-passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    try {
-      const user = await User.findOne({ username: username });
-      const match = await bcrypt.compare(password, user.password);
-
-      if (!user) {
-        return done(null, false, { message: "Incorrect username" });
-      }
-      if (!match) {
-        return done(null, false, { message: "Incorrect password" });
-      }
-      return done(null, user);
-    } catch (error) {
-      return done(error);
-    }
-  })
-);
-
-// passort serialize user function 2
-
-passport.serializeUser(function (user, done) {
-  done(null, user.id);
-});
-
-// passport deserialize user function 3
-
-passport.deserializeUser(async function (id, done) {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (error) {
-    done(error);
-  }
-});
+require("./utils/passport");
 
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
-// express locals  middleware -- gives us access to the user throughough the app
+// express locals middleware -- gives us access to the user throughough the app
 
 app.use((req, res, next) => {
+  console.log(req.session, "req.session");
+  console.log(req.user, "req.user");
+
   res.locals.title = "Members Only";
   res.locals.currentUser = req.user;
   res.locals.memberStatus = req.memberStatus;
   console.log(res.locals, "res.locals");
   next();
 });
-
-function middleware(req, res, next) {
-  if (req.session && req.session.user) {
-    next();
-  } else {
-    return res.json({
-      response: "login",
-    });
-  }
-}
 
 // compression
 app.use(compression());
@@ -123,6 +87,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+// routes
 app.use("/", indexRouter);
 
 // catch 404 and forward to error handler
