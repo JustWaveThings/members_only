@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const passportAuth = require("../utils/passport").passportAuth;
 
 // controller modules
 
 const controller = require("../controllers/controller");
+const passport = require("passport");
 
 // GET Routes
 
@@ -21,6 +23,6 @@ router.get("/admin-challenge", controller.admin_challenge_get);
 
 router.post("/sign-up", controller.sign_up_post);
 
-router.post("/login", controller.login_post);
+router.post("/login", passportAuth, controller.login_post);
 
 module.exports = router;
