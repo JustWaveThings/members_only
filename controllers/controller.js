@@ -38,6 +38,17 @@ exports.admin_challenge_get = asyncHandler(async (req, res, next) => {
   res.render("admin-challenge");
 });
 
+// get logout page
+
+exports.logout_get = asyncHandler(async (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
+
 // post sign up page
 
 exports.sign_up_post = [
