@@ -23,7 +23,7 @@ const limiter = require("./utils/rateLimit");
 const app = express();
 
 // rate limiter
-app.use(limiter);
+// app.use(limiter);
 
 // database connection
 app.use(database);
@@ -40,9 +40,6 @@ app.use(
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-
-// use express layouts middleware
-app.use(expressLayouts);
 
 // express session setup
 
@@ -68,12 +65,29 @@ app.use(express.urlencoded({ extended: false }));
 // express locals middleware -- gives us access to the user throughough the app
 
 app.use((req, res, next) => {
-  console.log(req.session, "req.session a");
+  res.locals.session = req.session;
   res.locals.title = "Members Only";
-  res.locals.currentUser = req.user;
-  res.locals.memberStatus = req.memberStatus;
   next();
 });
+
+app.use((req, res, next) => {
+  if (req.isAuthenticated()) {
+    res.locals.username = req.user.username;
+    res.locals.password = req.user.password;
+    res.locals.firstname = req.user.firstName;
+    res.locals.memberstatus = req.user.memberStatus;
+    res.locals.signedin = true;
+    console.log(req.user.username, "req.user.username");
+    next();
+  } else {
+    console.log(req.isAuthenticated(), "req.isAuthenticated()");
+    res.locals.signedin = false;
+    next();
+  }
+});
+
+// use express layouts middleware
+app.use(expressLayouts);
 
 // compression
 app.use(compression());
