@@ -1,6 +1,5 @@
 <%- contentFor('body') %>
 
-
-<main class='content-container'>
-  this is the messages page
+<main class="content-container">
+  <%- (typeof firstname !== 'undefined') ? `This is the messages page, ${firstname}. Your member status is: ${memberstatus} ` : "This is the messages page. You are not logged in." %>
 </main>
