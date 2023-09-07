@@ -2,7 +2,6 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const connection = require("./database");
 const User = require("../models/users");
-// const validPassword = require("./passwordUtils").validPassword;
 const bcrypt = require("bcryptjs");
 
 // passport local strategy  function 1
@@ -41,4 +40,10 @@ passport.deserializeUser(async function (id, done) {
   } catch (error) {
     done(error);
   }
+});
+
+exports.passportAuth = passport.authenticate("local", {
+  successRedirect: "/messages",
+  failureRedirect: "/login",
+  failureMessage: true,
 });
