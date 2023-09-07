@@ -49,7 +49,7 @@ app.use(expressLayouts);
 app.use(
   session({
     secret: process.env.SESSION_KEY,
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
@@ -68,13 +68,10 @@ app.use(express.urlencoded({ extended: false }));
 // express locals middleware -- gives us access to the user throughough the app
 
 app.use((req, res, next) => {
-  console.log(req.session, "req.session");
-  console.log(req.user, "req.user");
-
+  console.log(req.session, "req.session a");
   res.locals.title = "Members Only";
   res.locals.currentUser = req.user;
   res.locals.memberStatus = req.memberStatus;
-  console.log(res.locals, "res.locals");
   next();
 });
 
