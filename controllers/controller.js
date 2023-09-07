@@ -2,6 +2,8 @@ const User = require("../models/users");
 const Message = require("../models/messages");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const passport = require("passport");
+const bcrypt = require("bcryptjs");
 
 /* GET ROUTES  */
 
@@ -75,25 +77,33 @@ exports.sign_up_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    console.log(req.body);
 
-    const user = new User({
-      username: req.body.username,
-      password: req.body.password,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+    bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+      if (err) {
+        return next(err);
+      }
+      try {
+        const user = new User({
+          username: req.body.username,
+          password: hashedPassword,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+        });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          res.render("sign-up", {
+            user: user,
+            errors: errors.array(),
+          });
+          return;
+        } else {
+          await user.save();
+          res.redirect("/login");
+        }
+      } catch (err) {
+        next(err);
+      }
     });
-    console.log(errors);
-    if (!errors.isEmpty()) {
-      res.render("sign-up", {
-        user: user,
-        errors: errors.array(),
-      });
-      return;
-    } else {
-      await user.save();
-      res.redirect("/login");
-    }
   }),
 ];
 
@@ -110,20 +120,20 @@ exports.login_post = [
     .isLength({ min: 1 })
     .escape(),
   // process request after validation and sanitization
+
   asyncHandler(async (req, res, next) => {
+    console.log("in async handler for post");
     const errors = validationResult(req);
     console.log(req.body);
     if (!errors.isEmpty()) {
+      console.log("in error array");
       res.render("/login", {
         errors: errors.array(),
       });
       return;
     } else {
-      passport.authenticate("local", {
-        successRedirect: "/messages",
-        failureRedirect: "/login",
-        failureMessage: true,
-      });
+      console.log("made it to else");
+      next();
     }
   }),
 ];
