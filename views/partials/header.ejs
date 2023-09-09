@@ -2,7 +2,14 @@
   <h1><a class="header-logo" href="/"><%=title %></a></h1>
 
   <nav>
-    <% if (signedin) { %>
+    <% if (signedin && !member) { %>
+    <a class="header-link" href="./member-challenge">Become a Member</a>
+
+    <% } else if (signedin && member && !admin) { %>
+
+    <a class="header-link" href="./admin-challenge">Admin</a>
+    <% } %> <% if (signedin) { %>
+    <a class="header-link" href="./message-create">New Message</a>
     <a class="header-link" href="./logout">Sign Out</a>
     <% } else { %>
     <a class="header-link" href="./login">Sign In</a>
