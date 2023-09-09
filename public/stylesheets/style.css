@@ -76,7 +76,8 @@ label {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type='date'] {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -201,7 +202,7 @@ a:hover{
   border-radius: .5rem;
 }
 
-.error p {
+.error p, .error {
   color: rgba(255, 0, 0, 0.724);
   font-weight: bold;
   margin-bottom: 1rem;
