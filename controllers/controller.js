@@ -24,7 +24,7 @@ exports.messages_get = asyncHandler(async (req, res, next) => {
   const messages = await Message.find()
     .populate("user")
     .sort({ timestamp: "desc" });
-  res.render("messages", { messages: messages });
+  res.render("messages", { messages: messages, admin: res.locals.admin });
 });
 
 // get login page
@@ -145,9 +145,8 @@ exports.login_post = [
   // process request after validation and sanitization
 
   asyncHandler(async (req, res, next) => {
-    console.log("in async handler for post");
     const errors = validationResult(req);
-    console.log(req.body);
+
     if (!errors.isEmpty()) {
       console.error("in error array");
       res.render("/login", {
@@ -183,14 +182,12 @@ exports.message_create_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
     try {
-      console.log(req.body, "req.body");
       const message = new Message({
         title: req.body.title,
         message: req.body.message,
         user: res.locals.id,
         timestamp: Date.now(),
       });
-      console.log(message, "message");
       if (!errors.isEmpty()) {
         console.error("in error array of async handler");
         res.render("message-create", {
