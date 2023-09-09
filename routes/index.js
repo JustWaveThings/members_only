@@ -29,16 +29,14 @@ router.get("/logout", controller.logout_get);
 
 router.post("/login", passportAuth, controller.login_post);
 
-router.get("/message-create", controller.message_create_get);
+router.get("/message-create", isAuth, controller.message_create_get);
 
-router.post("/message-create", controller.message_create_post);
-
-router.post("/messages", controller.message_create_post);
+router.post("/message-create", isAuth, controller.message_create_post);
 
 router.get("/messages", controller.messages_get);
 
-router.get("/member-challenge", controller.member_challenge_get);
+router.get("/member-challenge", isAuth, controller.member_challenge_get);
 
-router.get("/admin-challenge", controller.admin_challenge_get);
+router.get("/admin-challenge", isMember, controller.admin_challenge_get);
 
 module.exports = router;
