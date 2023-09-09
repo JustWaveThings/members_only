@@ -1,5 +1,23 @@
 <%- contentFor('body') %>
 
 <main class="content-container">
-  <%- (typeof firstname !== 'undefined') ? `This is the messages page, ${firstname}. Your member status is: ${memberstatus} ` : "This is the messages page. You are not logged in." %>
+  <%- (typeof firstname !== 'undefined') ? `This is the messages page,
+  ${firstname}. ` : "This is the messages page. You are not logged in." %>
+
+
+    <h1>Message Board</h1>
+    <a href="/message-create">Create a New Message</a>
+    <ul>
+      <% messages.forEach((message, index) => { %>
+      <div class="message">
+        <strong><%= message.title %></strong>
+        <p><%= message.message %></p>
+        <small><%= message.timestamp %></small>
+        <div class="message-actions">
+          <button onclick="deleteMessage(<%= index %>)">Delete</button>
+        </div>
+      </div>
+      <% }); %>
+  
+ 
 </main>
