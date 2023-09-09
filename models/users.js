@@ -6,12 +6,8 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   firstName: { type: String, required: true, max: 100 },
   lastName: { type: String, required: true, max: 100 },
-  memberStatus: {
-    type: String,
-    required: true,
-    enum: ["non-member", "member", "admin"],
-    default: "non-member",
-  },
+  member: { type: Boolean, required: true, default: false },
+  admin: { type: Boolean, required: true, default: false },
 });
 
 // Virtual for user's full name
@@ -19,4 +15,4 @@ UserSchema.virtual("name").get(function () {
   return this.firstName + " " + this.lastName;
 });
 
-module.exports = mongoose.model("Users", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

@@ -75,13 +75,15 @@ app.use((req, res, next) => {
     res.locals.username = req.user.username;
     res.locals.password = req.user.password;
     res.locals.firstname = req.user.firstName;
-    res.locals.memberstatus = req.user.memberStatus;
+    res.locals.member = req.user.member;
+    res.locals.admin = req.user.admin;
     res.locals.signedin = true;
-    console.log(req.user.username, "req.user.username");
+    res.locals.id = req.user._id;
+    console.log(res.locals, "res.locals");
     next();
   } else {
-    console.log(req.isAuthenticated(), "req.isAuthenticated()");
     res.locals.signedin = false;
+    res.locals.member = false;
     next();
   }
 });
@@ -89,7 +91,10 @@ app.use((req, res, next) => {
 // use express layouts middleware
 app.use(expressLayouts);
 
-// compression
+/* app.use((req, res, next) => {
+  console.log(req.params, "req.params");
+  next();
+}) */ // compression
 app.use(compression());
 
 app.use(logger("dev"));
