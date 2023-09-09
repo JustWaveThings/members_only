@@ -11,15 +11,30 @@
 
   <div class="message">
     <% if (member) { %>
-    <h3>Name: <%= message.firstname %> <%= message.lastname %></h3>
-    <h4>Date Created: <%=message.timestamp %></h4>
+    <div class="message-box">
+      <h5>Name:</h5>
+      <h4><%= message.firstname %> <%= message.lastname %></h4>
+    </div>
+    <div class="message-box">
+      <h5>Date Created:</h5>
+      <h4><%=message.timestamp %></h4>
+    </div>
+
     <% } else { %>
-    <h5>Name: Members Only</h5>
-    <h5>Date Created: Members Only</h5>
+    <div class="message-box">
+      <h5>Name:</h5>
+      <h4>Members Only!</h4>
+    </div>
+
+    <div class="message-box">
+      <h5>Date Created:</h5>
+      <h4>Members Only!</h4>
+    </div>
+
     <% } %>
     <div class="message-box">
-      <h5>Title:</h5>
-      <strong> <%= message.title %></strong>
+      <h5>Subject:</h5>
+      <h4><%= message.title %></h4>
     </div>
 
     <div class="message-box">
