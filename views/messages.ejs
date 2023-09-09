@@ -1,13 +1,11 @@
 <%- contentFor('body') %>
 
 <main class="content-container">
-  <%- (typeof firstname !== 'undefined') ? `This is the messages page,
-  ${firstname}. ` : "This is the messages page. You are not logged in." %>
-
   <h1>Message Board</h1>
-  <a href="/message-create">Create a New Message</a>
 
-  <% messages.forEach((message) => { %>
+  <% if (signedin) { %>
+  <a href="/message-create">Create a New Message</a> <% } %> <%
+  messages.forEach((message) => { %>
 
   <div class="message">
     <% if (member) { %>
@@ -48,5 +46,5 @@
     </div>
     <% } %>
   </div>
-  <% }); %>
+  <% }) %>
 </main>
