@@ -1,3 +1,26 @@
 <%- contentFor('body') %>
 
-<main class="content-container">this is the member challenge page</main>
+<main class="content-container">
+  <h1>Membership Challenge Question</h1>
+  <h3>
+    This is an exclusive club. Only ones with the 'gift of GitHub' will be able
+    to join. Good luck!
+  </h3>
+  <form method="POST" action="">
+    <label for="question"
+      >What date was the 'initial commit' to this project's GitHub
+      repository?</label
+    >
+    <input type="date" id="question" name="question" required />
+    <br />
+
+    <% if (typeof authMessage !== 'undefined') {%>
+    <p class="error"><%= authMessage %></p>
+    <%} %>
+    <input type="submit" value="Submit Answer" />
+  </form>
+  <p>
+    Hint: Click on Octocat to open the respository, and look for a a clock icon
+    going backwards.
+  </p>
+</main>
