@@ -4,6 +4,8 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
+const isAuth = require("../utils/authMiddleware").isAuth;
+const isAdmin = require("../utils/authMiddleware").isAdmin;
 
 /* GET ROUTES  */
 
@@ -19,12 +21,22 @@ exports.sign_up_get = asyncHandler(async (req, res, next) => {
 
 // get messages page
 exports.messages_get = asyncHandler(async (req, res, next) => {
-  res.render("messages");
+  const messages = await Message.find()
+    .populate("user")
+    .sort({ timestamp: "desc" });
+  res.render("messages", { messages: messages });
 });
 
 // get login page
 exports.login_get = asyncHandler(async (req, res, next) => {
-  res.render("login");
+  let sessionAuthMessage = req.session.messages
+    ? req.session.messages.at(-1)
+    : null;
+
+  res.render("login", {
+    user: req.user,
+    authMessage: sessionAuthMessage,
+  });
 });
 
 // get member challenge page
@@ -137,14 +149,62 @@ exports.login_post = [
     const errors = validationResult(req);
     console.log(req.body);
     if (!errors.isEmpty()) {
-      console.log("in error array");
+      console.error("in error array");
       res.render("/login", {
         errors: errors.array(),
       });
       return;
     } else {
-      console.log("made it to else");
       next();
+    }
+  }),
+];
+
+exports.message_create_get = asyncHandler(async (req, res, next) => {
+  res.render("message-create", {
+    title: "Members Only",
+    errors: null,
+    user: null,
+  });
+});
+
+exports.message_create_post = [
+  // validate and sanitize fields
+  body("title", "Title must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("message", "message must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  // process request after validation and sanitization
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+    try {
+      console.log(req.body, "req.body");
+      const message = new Message({
+        title: req.body.title,
+        message: req.body.message,
+        user: res.locals.id,
+        timestamp: Date.now(),
+      });
+      console.log(message, "message");
+      if (!errors.isEmpty()) {
+        console.error("in error array of async handler");
+        res.render("message-create", {
+          message: message,
+          errors: errors.array(),
+        });
+        return;
+      } else {
+        await message.save();
+        console.error("message saved");
+        res.redirect("/messages");
+      }
+    } catch (error) {
+      next(error);
     }
   }),
 ];
