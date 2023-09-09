@@ -8,16 +8,15 @@
     <h1>Message Board</h1>
     <a href="/message-create">Create a New Message</a>
     <ul>
-      <% messages.forEach((message, index) => { %>
+      <% messages.forEach((message) => { %>
       <div class="message">
+
         <strong><%= message.title %></strong>
         <p><%= message.message %></p>
         <small><%= message.timestamp %></small>
         <div class="message-actions">
-          <button onclick="deleteMessage(<%= index %>)">Delete</button>
+          <a href="/message-delete/<%= message.id %>">Delete</a>
         </div>
       </div>
       <% }); %>
-  
- 
 </main>
