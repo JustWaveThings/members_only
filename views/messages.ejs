@@ -4,19 +4,34 @@
   <%- (typeof firstname !== 'undefined') ? `This is the messages page,
   ${firstname}. ` : "This is the messages page. You are not logged in." %>
 
+  <h1>Message Board</h1>
+  <a href="/message-create">Create a New Message</a>
 
-    <h1>Message Board</h1>
-    <a href="/message-create">Create a New Message</a>
-    <ul>
-      <% messages.forEach((message) => { %>
-      <div class="message">
+  <% messages.forEach((message) => { %>
 
-        <strong><%= message.title %></strong>
-        <p><%= message.message %></p>
-        <small><%= message.timestamp %></small>
-        <div class="message-actions">
-          <a href="/message-delete/<%= message.id %>">Delete</a>
-        </div>
-      </div>
-      <% }); %>
+  <div class="message">
+    <% if (member) { %>
+    <h3>Name: <%= message.firstname %> <%= message.lastname %></h3>
+    <h4>Date Created: <%=message.timestamp %></h4>
+    <% } else { %>
+    <h5>Name: Members Only</h5>
+    <h5>Date Created: Members Only</h5>
+    <% } %>
+    <div class="message-box">
+      <h5>Title:</h5>
+      <strong> <%= message.title %></strong>
+    </div>
+
+    <div class="message-box">
+      <h5>Message:</h5>
+      <p class="textbox"><%= message.message %></p>
+    </div>
+
+    <% if (admin) { %>
+    <div class="message-actions">
+      <a href="/message-delete/<%= message.id %>">Delete</a>
+    </div>
+    <% } %>
+  </div>
+  <% }); %>
 </main>
