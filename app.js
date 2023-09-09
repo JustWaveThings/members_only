@@ -82,8 +82,10 @@ app.use((req, res, next) => {
     console.log(res.locals, "res.locals");
     next();
   } else {
+    console.log("NOT SIGNED IN");
     res.locals.signedin = false;
     res.locals.member = false;
+    res.locals.admin = false;
     next();
   }
 });
@@ -91,10 +93,7 @@ app.use((req, res, next) => {
 // use express layouts middleware
 app.use(expressLayouts);
 
-/* app.use((req, res, next) => {
-  console.log(req.params, "req.params");
-  next();
-}) */ // compression
+// compression
 app.use(compression());
 
 app.use(logger("dev"));
