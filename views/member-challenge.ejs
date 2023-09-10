@@ -19,8 +19,15 @@
     <%} %>
     <input type="submit" value="Submit Answer" />
   </form>
+  <% if (typeof message !== 'undefined') {%>
+  <p class="error"><%= message %></p>
+  <%} %>
+
   <p>
     Hint: Click on Octocat to open the respository, and look for a a clock icon
     going backwards.
+  </p>
+  <p class="admin-link">
+    <a class="header-link" href="/admin-challenge">Admin</a>
   </p>
 </main>
