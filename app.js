@@ -79,11 +79,8 @@ app.use((req, res, next) => {
     res.locals.admin = req.user.admin;
     res.locals.signedin = true;
     res.locals.id = req.user._id;
-    console.log(res.locals, "res.locals");
-    console.log("SIGNED IN");
     next();
   } else {
-    console.log("NOT SIGNED IN");
     res.locals.signedin = false;
     res.locals.member = false;
     res.locals.admin = false;
