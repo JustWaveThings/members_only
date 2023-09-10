@@ -233,3 +233,12 @@ a:hover{
   gap: .5rem;
   align-items: baseline;
 }
+
+.admin-link{
+  margin-top: auto;
+  margin-bottom: .5rem;
+  align-self: flex-end;
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+}
