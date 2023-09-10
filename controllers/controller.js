@@ -1,11 +1,9 @@
+require("dotenv").config();
 const User = require("../models/users");
 const Message = require("../models/messages");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const passport = require("passport");
 const bcrypt = require("bcryptjs");
-const isAuth = require("../utils/authMiddleware").isAuth;
-const isAdmin = require("../utils/authMiddleware").isAdmin;
 
 /* GET ROUTES  */
 
@@ -41,7 +39,7 @@ exports.login_get = asyncHandler(async (req, res, next) => {
 
 // get member challenge page
 exports.member_challenge_get = asyncHandler(async (req, res, next) => {
-  res.render("member-challenge", { errors: null });
+  res.render("member-challenge", { error: null, message: null });
 });
 
 // get admin challenge page
@@ -148,7 +146,6 @@ exports.login_post = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      console.error("in error array");
       res.render("/login", {
         errors: errors.array(),
       });
@@ -189,7 +186,6 @@ exports.message_create_post = [
         timestamp: Date.now(),
       });
       if (!errors.isEmpty()) {
-        console.error("in error array of async handler");
         res.render("message-create", {
           message: message,
           errors: errors.array(),
@@ -197,11 +193,60 @@ exports.message_create_post = [
         return;
       } else {
         await message.save();
-        console.error("message saved");
-        res.redirect("/messages");
+
+        res.redirect("messages");
       }
     } catch (error) {
       next(error);
     }
   }),
 ];
+
+exports.member_challenge_post = [
+  // validate and sanitize field
+  body("question", "Answer cannot be empty").trim().isLength(10).escape(),
+  // process request after validation and sanitization
+  asyncHandler(async (req, res, next) => {
+    const match = await bcrypt.compare(
+      req.body.question,
+      process.env.MEMBER_SECRET_HASH
+    );
+
+    if (match) {
+      // update mongo to show user is a member
+      await User.findByIdAndUpdate(res.locals.id, { member: true });
+      res.status(200).redirect("messages");
+    } else {
+      res.render("member-challenge", {
+        message: "Incorrect answer. Try again.",
+      });
+    }
+  }),
+];
+
+exports.admin_challenge_post = [
+  // validate and sanitize field
+  body("admin", "Answer cannot be empty").trim().isLength({ min: 8 }).escape(),
+  // process request after validation and sanitization
+
+  asyncHandler(async (req, res, next) => {
+    const match = await bcrypt.compare(
+      req.body.admin,
+      process.env.ADMIN_SECRET_HASH
+    );
+    if (match) {
+      // update mongo to show user is an admin
+      await User.findByIdAndUpdate(res.locals.id, { admin: true });
+      res.status(200).redirect("messages");
+    } else {
+      res.render("admin-challenge", {
+        message: "Incorrect answer. Try again.",
+      });
+    }
+  }),
+];
+
+exports.message_delete_post = asyncHandler(async (req, res) => {
+  await Message.findByIdAndRemove(req.params._id);
+  res.redirect("/messages");
+});
