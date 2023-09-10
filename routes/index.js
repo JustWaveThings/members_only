@@ -33,10 +33,14 @@ router.get("/message-create", isAuth, controller.message_create_get);
 
 router.post("/message-create", isAuth, controller.message_create_post);
 
-router.get("/messages", controller.messages_get);
-
 router.get("/member-challenge", isAuth, controller.member_challenge_get);
 
+router.post("/member-challenge", isAuth, controller.member_challenge_post);
+
 router.get("/admin-challenge", isMember, controller.admin_challenge_get);
+
+router.post("/admin-challenge", isMember, controller.admin_challenge_post);
+
+router.post("/messages/:_id", isAdmin, controller.message_delete_post);
 
 module.exports = router;
