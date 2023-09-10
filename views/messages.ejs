@@ -3,15 +3,13 @@
 <main class="content-container">
   <h1>Message Board</h1>
 
-  <% if (signedin) { %>
-  <a href="/message-create">Create a New Message</a> <% } %> <%
-  messages.forEach((message) => { %>
+  <% messages.forEach((message) => { %>
 
   <div class="message">
     <% if (member) { %>
     <div class="message-box">
       <h5>Name:</h5>
-      <h4><%= message.firstname %> <%= message.lastname %></h4>
+      <h4><%= message.firstName %> <%= message.lastName %></h4>
     </div>
     <div class="message-box">
       <h5>Date Created:</h5>
@@ -41,9 +39,11 @@
     </div>
 
     <% if (admin) { %>
-    <div class="message-actions">
-      <a href="/message-delete/<%= message.id %>">Delete</a>
-    </div>
+
+    <form method="POST" action="/messages/<%= message._id%>">
+      <input type="submit" value="Delete" />
+    </form>
+
     <% } %>
   </div>
   <% }) %>
