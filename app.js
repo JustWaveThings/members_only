@@ -9,8 +9,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 
-const user_controller = require('./models/users');
-const message_controller = require('./models/messages');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const database = require('./utils/database');
 
@@ -23,7 +22,7 @@ const limiter = require('./utils/rateLimit');
 const app = express();
 
 // rate limiter
-// app.use(limiter);
+app.use(limiter);
 
 // database connection
 app.use(database);
@@ -43,13 +42,23 @@ app.set('view engine', 'ejs');
 
 // express session setup
 
+const store = new MongoDBStore({
+  uri: `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@cluster0.dmc0his.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+  collection: 'sessions',
+});
+
+store.on('error', function (error) {
+  console.log(error);
+});
+
 app.use(
-  session({
+  require('express-session')({
     secret: process.env.SESSION_KEY,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
+    store: store,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     },
   })
 );
@@ -85,7 +94,7 @@ app.use((req, res, next) => {
   }
 });
 
-// use express layouts middleware
+// use express ejs layouts middleware
 app.use(expressLayouts);
 
 // compression
@@ -116,4 +125,4 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-app.listen(3001, () => console.log('App listening on port 3001!'));
+app.listen(3000);
