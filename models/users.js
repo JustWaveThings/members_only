@@ -5,7 +5,7 @@ const UserSchema = new Schema({
   username: { type: String, required: true, max: 100 },
   password: { type: String, required: true },
   firstName: { type: String, required: true, max: 100 },
-  lastName: { type: String, required: true, max: 100 },
+  lastName: { type: String, required: false, max: 100 },
   member: { type: Boolean, required: true, default: false },
   admin: { type: Boolean, required: true, default: false },
 });
