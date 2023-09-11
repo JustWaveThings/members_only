@@ -23,8 +23,6 @@ exports.messages_get = asyncHandler(async (req, res, next) => {
     .populate('user')
     .sort({ timestamp: -1 })
     .exec();
-
-  console.log(messages);
   res.render('messages', { messages: messages });
 });
 
