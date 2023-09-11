@@ -1,17 +1,17 @@
-# fly.toml app configuration file generated for members-only-quotes888 on 2023-09-11T12:27:48-04:00
+# fly.toml app configuration file generated for members-only-quotes on 2023-09-11T13:59:21-04:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "members-only-quotes888"
+app = "members-only-quotes"
 primary_region = "iad"
 
 [build]
 
 [http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-  min_machines_running = 0
-  processes = ["app"]
+internal_port = 3000
+force_https = true
+auto_stop_machines = true
+auto_start_machines = true
+min_machines_running = 0
+processes = ["app"]
