@@ -1,28 +1,31 @@
-require("dotenv").config();
-const User = require("../models/users");
-const Message = require("../models/messages");
-const asyncHandler = require("express-async-handler");
-const { body, validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
+require('dotenv').config();
+const User = require('../models/users');
+const Message = require('../models/messages');
+const asyncHandler = require('express-async-handler');
+const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 
 /* GET ROUTES  */
 
 /* GET home page. */
 exports.index = asyncHandler(async (req, res, next) => {
-  res.render("index");
+  res.render('index');
 });
 
 // GET sign up page
 exports.sign_up_get = asyncHandler(async (req, res, next) => {
-  res.render("sign-up", { title: "Members Only", errors: null, user: null });
+  res.render('sign-up', { title: 'Members Only', errors: null, user: null });
 });
 
 // get messages page
 exports.messages_get = asyncHandler(async (req, res, next) => {
   const messages = await Message.find()
-    .populate("user")
-    .sort({ timestamp: "desc" });
-  res.render("messages", { messages: messages, admin: res.locals.admin });
+    .populate('user')
+    .sort({ timestamp: -1 })
+    .exec();
+
+  console.log(messages);
+  res.render('messages', { messages: messages });
 });
 
 // get login page
@@ -31,7 +34,7 @@ exports.login_get = asyncHandler(async (req, res, next) => {
     ? req.session.messages.at(-1)
     : null;
 
-  res.render("login", {
+  res.render('login', {
     user: req.user,
     authMessage: sessionAuthMessage,
   });
@@ -39,13 +42,13 @@ exports.login_get = asyncHandler(async (req, res, next) => {
 
 // get member challenge page
 exports.member_challenge_get = asyncHandler(async (req, res, next) => {
-  res.render("member-challenge", { error: null, message: null });
+  res.render('member-challenge', { error: null, message: null });
 });
 
 // get admin challenge page
 
 exports.admin_challenge_get = asyncHandler(async (req, res, next) => {
-  res.render("admin-challenge");
+  res.render('admin-challenge');
 });
 
 // get logout page
@@ -55,7 +58,7 @@ exports.logout_get = asyncHandler(async (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    res.redirect('/');
   });
 });
 
@@ -63,32 +66,32 @@ exports.logout_get = asyncHandler(async (req, res, next) => {
 
 exports.sign_up_post = [
   // validate and sanitize fields
-  body("firstName", "Username must not be empty.")
+  body('firstName', 'Username must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("lastName", "Username must not be empty.")
+  body('lastName', 'Username must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("username", "Email must not be empty.")
+  body('username', 'Email must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("password", "Password must not be empty.")
+  body('password', 'Password must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("confirmPassword", "Password must not be empty.").trim().escape(),
-  body("username").custom(async (value) => {
+  body('confirmPassword', 'Password must not be empty.').trim().escape(),
+  body('username').custom(async (value) => {
     const user = await User.findOne({ username: value });
     if (user) {
-      throw new Error("Email already in use");
+      throw new Error('Email already in use');
     }
   }),
-  body("confirmPassword").custom((value, { req }) => {
+  body('confirmPassword').custom((value, { req }) => {
     if (value !== req.body.password) {
-      throw new Error("Passwords do not match");
+      throw new Error('Passwords do not match');
     } else {
       return true;
     }
@@ -112,14 +115,14 @@ exports.sign_up_post = [
         });
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-          res.render("sign-up", {
+          res.render('sign-up', {
             user: user,
             errors: errors.array(),
           });
           return;
         } else {
           await user.save();
-          res.redirect("/login");
+          res.redirect('/login');
         }
       } catch (err) {
         next(err);
@@ -132,11 +135,11 @@ exports.sign_up_post = [
 
 exports.login_post = [
   // validate and sanitize fields
-  body("username", "Email must not be empty.")
+  body('username', 'Email must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("password", "Password must not be empty.")
+  body('password', 'Password must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape(),
@@ -146,7 +149,7 @@ exports.login_post = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.render("/login", {
+      res.render('/login', {
         errors: errors.array(),
       });
       return;
@@ -157,8 +160,8 @@ exports.login_post = [
 ];
 
 exports.message_create_get = asyncHandler(async (req, res, next) => {
-  res.render("message-create", {
-    title: "Members Only",
+  res.render('message-create', {
+    title: 'Members Only',
     errors: null,
     user: null,
   });
@@ -166,11 +169,11 @@ exports.message_create_get = asyncHandler(async (req, res, next) => {
 
 exports.message_create_post = [
   // validate and sanitize fields
-  body("title", "Title must not be empty.")
+  body('title', 'Title must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("message", "message must not be empty.")
+  body('message', 'message must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape(),
@@ -186,7 +189,7 @@ exports.message_create_post = [
         timestamp: Date.now(),
       });
       if (!errors.isEmpty()) {
-        res.render("message-create", {
+        res.render('message-create', {
           message: message,
           errors: errors.array(),
         });
@@ -194,7 +197,7 @@ exports.message_create_post = [
       } else {
         await message.save();
 
-        res.redirect("messages");
+        res.redirect('messages');
       }
     } catch (error) {
       next(error);
@@ -204,7 +207,7 @@ exports.message_create_post = [
 
 exports.member_challenge_post = [
   // validate and sanitize field
-  body("question", "Answer cannot be empty").trim().isLength(10).escape(),
+  body('question', 'Answer cannot be empty').trim().isLength(10).escape(),
   // process request after validation and sanitization
   asyncHandler(async (req, res, next) => {
     const match = await bcrypt.compare(
@@ -213,12 +216,11 @@ exports.member_challenge_post = [
     );
 
     if (match) {
-      // update mongo to show user is a member
       await User.findByIdAndUpdate(res.locals.id, { member: true });
-      res.status(200).redirect("messages");
+      res.status(200).redirect('messages');
     } else {
-      res.render("member-challenge", {
-        message: "Incorrect answer. Try again.",
+      res.render('member-challenge', {
+        message: 'Incorrect answer. Try again.',
       });
     }
   }),
@@ -226,7 +228,7 @@ exports.member_challenge_post = [
 
 exports.admin_challenge_post = [
   // validate and sanitize field
-  body("admin", "Answer cannot be empty").trim().isLength({ min: 8 }).escape(),
+  body('admin', 'Answer cannot be empty').trim().isLength({ min: 8 }).escape(),
   // process request after validation and sanitization
 
   asyncHandler(async (req, res, next) => {
@@ -235,12 +237,11 @@ exports.admin_challenge_post = [
       process.env.ADMIN_SECRET_HASH
     );
     if (match) {
-      // update mongo to show user is an admin
       await User.findByIdAndUpdate(res.locals.id, { admin: true });
-      res.status(200).redirect("messages");
+      res.status(200).redirect('messages');
     } else {
-      res.render("admin-challenge", {
-        message: "Incorrect answer. Try again.",
+      res.render('admin-challenge', {
+        message: 'Incorrect answer. Try again.',
       });
     }
   }),
@@ -248,5 +249,5 @@ exports.admin_challenge_post = [
 
 exports.message_delete_post = asyncHandler(async (req, res) => {
   await Message.findByIdAndRemove(req.params._id);
-  res.redirect("/messages");
+  res.redirect('/messages');
 });
