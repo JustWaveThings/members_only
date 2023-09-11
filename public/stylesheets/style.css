@@ -39,6 +39,7 @@ body {
 }
 
 a {
+  color: #333;
   text-decoration: none;
   font-size: 18px;
     font-weight: bold;
@@ -75,6 +76,7 @@ label {
   margin-bottom: 5px;
 }
 
+textarea,
 input[type="text"],
 input[type="password"],
 input[type='date'] {
@@ -88,7 +90,7 @@ input[type='date'] {
   font-size: 1.25rem;
  
 }
-
+button[type="submit"],
 input[type="submit"] {
   background-color: #feb058b3;
   color: #fff;
@@ -98,7 +100,7 @@ input[type="submit"] {
   cursor: pointer;
 }
 
-
+button[type="submit"]:hover,
 input[type="submit"]:hover {
   background-color: #ff8800;
 }
@@ -209,13 +211,12 @@ a:hover{
 }
 
 .message{
-  background-color: rgba(0, 0, 0, 0.53);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.53) 0%, rgba(0, 0, 0, .20) 50%,  rgba(0, 0, 0, 0.53) 100%);
   color: #fff;
   font-weight: bold;
   margin: 1rem;
   padding: 1.25rem 2rem;
   width: 85%;
- 
   display: flex;
   flex-direction: column;
   border-radius: .5rem;
@@ -241,4 +242,14 @@ a:hover{
   margin-left: 1rem;
   margin-bottom: 1rem;
   margin-right: 1rem;
+}
+
+.delete-button{
+  min-width: 100px;
+  width: fit-content;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  
 }
