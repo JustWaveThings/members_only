@@ -1,19 +1,20 @@
 <%- contentFor('body') %>
 
 <main class="content-container">
-  <h1>Message Board</h1>
+  <h1>Famous Quotes</h1>
+  <h4>Share your own favorite quotes with the world!</h4>
 
   <% messages.forEach((message) => { %>
 
   <div class="message">
     <% if (member) { %>
     <div class="message-box">
-      <h5>Name:</h5>
-      <h4><%= message.firstName %> <%= message.lastName %></h4>
+      <h5>Famous Person:</h5>
+      <h4><%= message.user?.firstName %> <%=message.user?.lastName%></h4>
     </div>
     <div class="message-box">
-      <h5>Date Created:</h5>
-      <h4><%=message.timestamp %></h4>
+      <h5>Date Indexed:</h5>
+      <h4><%=message.timestamp_formatted %></h4>
     </div>
 
     <% } else { %>
@@ -34,13 +35,17 @@
     </div>
 
     <div class="message-box">
-      <h5>Message:</h5>
-      <p class="textbox"><%= message.message %></p>
+      <h5>Quote:</h5>
+      <p class="textbox">"<%= message.message %>"</p>
     </div>
 
     <% if (admin) { %>
 
-    <form method="POST" action="/messages/<%= message._id%>">
+    <form
+      method="POST"
+      class="delete-button"
+      action="/messages/<%= message._id%>"
+    >
       <input type="submit" value="Delete" />
     </form>
 
