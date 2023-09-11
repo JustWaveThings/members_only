@@ -75,7 +75,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
   res.locals.session = req.session;
-  res.locals.title = 'Members Only';
+  res.locals.title = 'Members Only Quotes';
   next();
 });
 
@@ -125,4 +125,4 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-app.listen(3000);
+module.exports = app;
